@@ -13,6 +13,8 @@ import java.util.List;
 @RestController
 @RequestMapping("/api/v1/categoria")
 public class CategoriaController {
+
+    //cambios
     @Autowired
     private CategoriaRepository  categoriaRepository;
 
