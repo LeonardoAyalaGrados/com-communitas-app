@@ -53,7 +53,7 @@ public class Usuario {
     private String direccion;
 
 
-    @ManyToOne(cascade = {CascadeType.ALL},optional = false)
+    @ManyToOne(cascade = {CascadeType.ALL},optional = false, fetch = FetchType.EAGER)
     @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
     @JoinColumn(name = "fk_distrito", referencedColumnName = "id_distrito", updatable = true)
     private Distrito distrito;

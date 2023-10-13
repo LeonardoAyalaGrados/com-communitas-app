@@ -7,7 +7,9 @@ import com.communitas.store.app.entity.Libro;
 import com.communitas.store.app.entity.Usuario;
 import com.communitas.store.app.repository.DistritoRepository;
 import com.communitas.store.app.repository.UsuarioRepository;
+import com.communitas.store.app.response.UsuarioResponse;
 import com.fasterxml.jackson.databind.util.JSONPObject;
+import jakarta.persistence.Entity;
 import jakarta.persistence.EntityNotFoundException;
 import jakarta.validation.Valid;
 import org.modelmapper.ModelMapper;
@@ -17,6 +19,8 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.web.PageableDefault;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
@@ -79,6 +83,39 @@ public class UsuarioController {
         */
 
         return usuarioEncontrado.get();
+    }
+
+    @GetMapping("/id/{id}")
+    public ResponseEntity<UsuarioResponse> buscarPorId(@PathVariable Integer id){
+        Optional<Usuario> usuarioEncontrado=Optional.of(usuarioRepository.findById(id).get());
+        Optional<Distrito> distritoEncontrado=Optional.of(distritoRepository.findById(usuarioEncontrado.get().getDistrito().getIdDistrito()).orElseThrow());
+        if (usuarioEncontrado.isEmpty()){
+            throw new EntityNotFoundException();
+        }
+
+        /*
+        Usuario usuario = usuarioEncontrado.get();
+
+        UsuarioResponse usuarioResponse = new UsuarioResponse();
+        usuarioResponse.setIdUsuario(usuario.getIdUsuario());
+        usuarioResponse.setNombre(usuario.getNombre());
+        usuarioResponse.setApellido(usuario.getApellido());
+        usuarioResponse.setFullName(usuario.getFullName());
+        usuarioResponse.setCelular(usuario.getCelular());
+        usuarioResponse.setEmail(usuario.getEmail());
+        usuarioResponse.setContraseña(usuario.getContraseña());
+        usuarioResponse.setRol(usuario.getRol());
+        usuarioResponse.setCreadoEn(usuario.getCreadoEn());
+        usuarioResponse.setActualizadoEn(usuario.getActualizadoEn());
+        usuarioResponse.setDireccion(usuario.getDireccion());
+        usuarioResponse.setDistrito(distritoEncontrado.get().getIdDistrito());
+        usuarioResponse.setOrdenes(usuario.getOrdenes());
+*/
+        Usuario usuario = usuarioEncontrado.get();
+        UsuarioResponse usuarioResponse = modelMapper.map(usuario, UsuarioResponse.class);
+        usuarioResponse.setDistrito(distritoEncontrado.get().getIdDistrito());
+
+        return new ResponseEntity<UsuarioResponse>(usuarioResponse, HttpStatus.OK);
     }
 
 }
