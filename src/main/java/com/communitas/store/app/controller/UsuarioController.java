@@ -53,9 +53,20 @@ public class UsuarioController {
         return usuarioRepository.findAll();
     }
 
+    // Función para mapear Usuario a UsuarioResponse
+    private UsuarioResponse mapUsuarioToUsuarioResponse(Usuario usuario) {
+        return modelMapper.map(usuario, UsuarioResponse.class);
+    }
+
+    // Endpoint para listar UsuarioResponse paginados
     @GetMapping
-    public Page<Usuario> pageable(@PageableDefault(sort = "fullName",direction = Sort.Direction.ASC, size = 5) Pageable pageable){
-        return usuarioRepository.findAll(pageable);
+    public Page<UsuarioResponse> pageable(@PageableDefault(sort = "idUsuario", direction = Sort.Direction.ASC, size = 5) Pageable pageable) {
+        Page<Usuario> usuariosPaginados = usuarioRepository.findAll(pageable);
+
+        // Mapea los usuarios a UsuarioResponse
+        Page<UsuarioResponse> usuariosResponsePaginados = usuariosPaginados.map(this::mapUsuarioToUsuarioResponse);
+
+        return usuariosResponsePaginados;
     }
 
     @PostMapping("/save")
@@ -113,7 +124,7 @@ public class UsuarioController {
 */
         Usuario usuario = usuarioEncontrado.get();
         UsuarioResponse usuarioResponse = modelMapper.map(usuario, UsuarioResponse.class);
-        usuarioResponse.setDistrito(distritoEncontrado.get().getIdDistrito());
+        //usuarioResponse.setDistrito(distritoEncontrado.get().getNombre());
 
         return new ResponseEntity<UsuarioResponse>(usuarioResponse, HttpStatus.OK);
     }

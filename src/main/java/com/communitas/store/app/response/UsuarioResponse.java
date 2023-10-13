@@ -29,5 +29,6 @@ public class UsuarioResponse {
     private LocalDateTime actualizadoEn;
     private String direccion;
     private Integer distrito;
+    private String nombreDistrito;
     private List<VentaOrden> ordenes;
 }
