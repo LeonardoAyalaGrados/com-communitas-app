@@ -2,6 +2,7 @@ package com.communitas.store.app.controller;
 
 
 import com.communitas.store.app.controller.dto.UsuarioDTO;
+import com.communitas.store.app.controller.dto.UsuarioHomeDTO;
 import com.communitas.store.app.entity.Distrito;
 import com.communitas.store.app.entity.Libro;
 import com.communitas.store.app.entity.Usuario;
@@ -127,6 +128,21 @@ public class UsuarioController {
         //usuarioResponse.setDistrito(distritoEncontrado.get().getNombre());
 
         return new ResponseEntity<UsuarioResponse>(usuarioResponse, HttpStatus.OK);
+    }
+
+    @PutMapping("/updateuser/{id}")
+    public Usuario updateUser(@PathVariable("id") Integer id ,@Validated @RequestBody UsuarioDTO usuarioDTO){
+        Optional<Distrito> distrito=Optional.of(distritoRepository.findById(usuarioDTO.getDistrito().getIdDistrito())
+                .orElseThrow(EntityNotFoundException::new));
+        Optional<Usuario> usuarioEncontrado=usuarioRepository.findById(id);
+        if (!usuarioEncontrado.isPresent()){
+            throw new EntityNotFoundException();
+        }
+        modelMapper.map(usuarioDTO,usuarioEncontrado.get());
+        usuarioEncontrado.get().setFullName(usuarioDTO.getNombre()+" "+usuarioDTO.getApellido());
+        usuarioEncontrado.get().setDistrito(distrito.get());
+
+        return  usuarioRepository.save(usuarioEncontrado.get());
     }
 
 }
