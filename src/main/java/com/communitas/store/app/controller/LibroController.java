@@ -38,7 +38,7 @@ public class LibroController {
 
 
     @GetMapping
-    public Page<Libro> pageable(@PageableDefault(sort = "title",direction = Sort.Direction.ASC, size = 5) Pageable pageable){
+    public Page<Libro> pageable(@PageableDefault(sort = "idLibro",direction = Sort.Direction.ASC, size = 5) Pageable pageable){
         return libroRepository.findAll(pageable);
     }
 

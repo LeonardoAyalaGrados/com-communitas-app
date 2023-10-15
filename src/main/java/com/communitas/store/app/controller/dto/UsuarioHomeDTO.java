@@ -23,7 +23,6 @@ public class UsuarioHomeDTO {
     @Size(min = 9,max = 9)
     private String celular;
     @NotNull
-    @Size(min = 5)
     private String contraseña;
 
     @NotNull

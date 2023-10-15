@@ -1,5 +1,6 @@
 package com.communitas.store.app.controller;
 
+import com.communitas.store.app.BCryptPassword.BCryptPassword;
 import com.communitas.store.app.controller.dto.UsuarioHomeDTO;
 import com.communitas.store.app.entity.Distrito;
 import com.communitas.store.app.entity.Libro;
@@ -10,9 +11,11 @@ import com.communitas.store.app.repository.UsuarioRepository;
 import jakarta.persistence.EntityNotFoundException;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
@@ -33,6 +36,8 @@ public class HomeController {
 
     @Autowired
     private DistritoRepository distritoRepository;
+    @Autowired
+    private BCryptPasswordEncoder passwordEncoder;
 
     @PostMapping("/login")
     public ResponseEntity<Usuario> loginAndroid(@RequestParam String email, String contraseña){
@@ -50,7 +55,11 @@ public class HomeController {
             throw new DataIntegrityViolationException("");
         }
         Optional<Distrito> distritoOptional=distritoRepository.findById(usuarioHomeDTO.getDistrito().getIdDistrito());
+
         Usuario nuevoUsuario=modelMapper.map(usuarioHomeDTO,Usuario.class);
+        String contraseñaEncriptada = passwordEncoder.encode(usuarioHomeDTO.getContraseña());
+        nuevoUsuario.setContraseña(contraseñaEncriptada);
+        System.out.println("contraseña ->"+contraseñaEncriptada);
         nuevoUsuario.setDistrito(distritoOptional.get());
         nuevoUsuario.setRol(Usuario.Rol.USUARIO);
         nuevoUsuario.setFullName(usuarioHomeDTO.getNombre()+" "+usuarioHomeDTO.getApellido());
