@@ -60,6 +60,8 @@ public class HomeController {
         String contraseñaEncriptada = passwordEncoder.encode(usuarioHomeDTO.getContraseña());
         nuevoUsuario.setContraseña(contraseñaEncriptada);
         System.out.println("contraseña ->"+contraseñaEncriptada);
+
+
         nuevoUsuario.setDistrito(distritoOptional.get());
         nuevoUsuario.setRol(Usuario.Rol.USUARIO);
         nuevoUsuario.setFullName(usuarioHomeDTO.getNombre()+" "+usuarioHomeDTO.getApellido());
