@@ -14,6 +14,7 @@ import java.nio.file.Files;
 import java.util.Map;
 
 @RestController
+@CrossOrigin
 @RequestMapping("/api/media")
 public class MediaController {
 

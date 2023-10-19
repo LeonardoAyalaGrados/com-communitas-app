@@ -83,18 +83,15 @@ public class UsuarioController {
         return usuarioRepository.save(nuevoUsuario);
     }
     @GetMapping("/findbyemail")
-    public Usuario findByEmail(@RequestParam String email){
+    public ResponseEntity<UsuarioResponse> findByEmail(@RequestParam String email){
         Optional<Usuario>usuarioEncontrado=usuarioRepository.findByEmail(email);
         if (!usuarioEncontrado.isPresent()){
            throw  new EntityNotFoundException();
         }
-        /*
-        usuarioEncontrado.get().getDistrito();
-        Integer idDistritousuario=usuarioEncontrado.get().getDistrito().getIdDistrito();
-        System.out.println("ID USUARIO DISTRITO = "+idDistritousuario);
-        */
+        Usuario usuario = usuarioEncontrado.get();
+        UsuarioResponse usuarioResponse = modelMapper.map(usuario, UsuarioResponse.class);
 
-        return usuarioEncontrado.get();
+        return new ResponseEntity<UsuarioResponse>(usuarioResponse, HttpStatus.OK);
     }
 
     @GetMapping("/id/{id}")
