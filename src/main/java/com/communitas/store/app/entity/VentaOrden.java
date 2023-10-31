@@ -36,6 +36,7 @@ public class VentaOrden {
     @OneToMany(mappedBy = "ventaOrden" ,fetch = FetchType.EAGER)
     private List<VentaLibro> ventaLibros;
 
+
     public void setVentaLibros(List<VentaLibro> ventaLibros) {
         this.ventaLibros = ventaLibros;
         for (VentaLibro ventaLibro: ventaLibros) {

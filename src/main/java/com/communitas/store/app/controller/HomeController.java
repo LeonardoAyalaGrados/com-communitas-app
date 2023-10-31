@@ -8,6 +8,7 @@ import com.communitas.store.app.entity.Usuario;
 import com.communitas.store.app.repository.DistritoRepository;
 import com.communitas.store.app.repository.LibroRepository;
 import com.communitas.store.app.repository.UsuarioRepository;
+import com.communitas.store.app.service.EmailService;
 import jakarta.persistence.EntityNotFoundException;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,6 +16,8 @@ import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.mail.SimpleMailMessage;
+import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
@@ -30,6 +33,9 @@ public class HomeController {
     private ModelMapper modelMapper=new ModelMapper();
     @Autowired
     private UsuarioRepository usuarioRepository;
+
+    @Autowired
+    private JavaMailSender javaMailSender;
 
     @Autowired
     private LibroRepository libroRepository;
@@ -65,6 +71,14 @@ public class HomeController {
         nuevoUsuario.setDistrito(distritoOptional.get());
         nuevoUsuario.setRol(Usuario.Rol.USUARIO);
         nuevoUsuario.setFullName(usuarioHomeDTO.getNombre()+" "+usuarioHomeDTO.getApellido());
+
+        //envio de correo
+        SimpleMailMessage simpleMailMessage=new SimpleMailMessage();
+        simpleMailMessage.setTo(nuevoUsuario.getEmail());
+        simpleMailMessage.setFrom("libreriaproyectocommunitas@gmail.com");
+        simpleMailMessage.setSubject("REGISTRO EXITOSO");
+        simpleMailMessage.setText("GRACIAS POR REGISTRARTE A COMMUNITAS Y AYUDARNOS A CRECER");
+        javaMailSender.send(simpleMailMessage);
         return usuarioRepository.save(nuevoUsuario);
     }
 
