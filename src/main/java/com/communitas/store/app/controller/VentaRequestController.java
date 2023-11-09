@@ -47,6 +47,8 @@ public class VentaRequestController {
             //Nueva orden de venta
             VentaOrden ordenDeVenta = new VentaOrden();
             ordenDeVenta.setEstado(VentaOrden.Estado.PENDIENTE); // Definimos el estado PENDIENTE por defecto
+            ordenDeVenta.setTipoEntrega(ventaRequest.getTipoDeEntrega());
+            System.out.println("TIPO DE ENTREGA"+ventaRequest.getTipoDeEntrega());
             ordenDeVenta.setUsuario(usuarioEncontrado.get());
 
             //Lista de VentaLibro asociados a la orden de venta

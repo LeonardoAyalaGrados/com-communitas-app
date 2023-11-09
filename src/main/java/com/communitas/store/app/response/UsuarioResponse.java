@@ -2,6 +2,7 @@ package com.communitas.store.app.response;
 
 import com.communitas.store.app.entity.Distrito;
 import com.communitas.store.app.entity.Usuario;
+import com.communitas.store.app.entity.VentaLibro;
 import com.communitas.store.app.entity.VentaOrden;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.persistence.*;
@@ -11,11 +12,11 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import java.time.LocalDateTime;
-import java.util.List;
-@NoArgsConstructor
+import java.util.List;@NoArgsConstructor
 @AllArgsConstructor
 @Getter
 @Setter
+
 public class UsuarioResponse {
     private Integer idUsuario;
     private String nombre;
@@ -31,4 +32,5 @@ public class UsuarioResponse {
     private Integer distrito;
     private String nombreDistrito;
     private List<VentaOrden> ordenes;
+    private VentaLibro titulo;
 }

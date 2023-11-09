@@ -24,6 +24,9 @@ public class VentaOrden {
     @Enumerated(EnumType.STRING)
     private Estado estado;
 
+    @Enumerated(EnumType.STRING)
+    private TipoEntrega tipoEntrega;
+
     @Column(name = "creado_en")
     private LocalDateTime creadoEn;
 
@@ -53,5 +56,11 @@ public class VentaOrden {
     public enum Estado{
         PENDIENTE,
         DESPACHADO,
+    }
+
+    public enum TipoEntrega{
+        ENTREGA_DOMICILIO,
+
+        RECOJO_TIENDA,
     }
 }
