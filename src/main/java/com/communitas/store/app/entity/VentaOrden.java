@@ -55,7 +55,8 @@ public class VentaOrden {
 
     public enum Estado{
         PENDIENTE,
-        DESPACHADO,
+        EN_PROCESO,
+        ATENDIDO,
     }
 
     public enum TipoEntrega{

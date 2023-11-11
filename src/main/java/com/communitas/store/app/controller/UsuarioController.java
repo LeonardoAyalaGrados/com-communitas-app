@@ -22,6 +22,9 @@ import org.springframework.data.domain.Sort;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.mail.SimpleMailMessage;
+import org.springframework.mail.javamail.JavaMailSender;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
@@ -33,12 +36,17 @@ import java.util.Optional;
 @RestController
 @RequestMapping("/api/v1/usuario")
 public class UsuarioController {
-    private final ModelMapper modelMapper=new ModelMapper();
+    private final ModelMapper modelMapper = new ModelMapper();
     @Autowired
     private UsuarioRepository usuarioRepository;
 
     @Autowired
+    private JavaMailSender javaMailSender;
+    @Autowired
     private DistritoRepository distritoRepository;
+
+    @Autowired
+    private BCryptPasswordEncoder passwordEncoder;
 /*
     @PostMapping("/save")
     public Usuario saveUser(@Validated @RequestBody Usuario usuario){
@@ -61,7 +69,7 @@ public class UsuarioController {
 
     // Endpoint para listar UsuarioResponse paginados
     @GetMapping
-    public Page<UsuarioResponse> pageable(@PageableDefault(sort = "idUsuario", direction = Sort.Direction.ASC, size = 5) Pageable pageable) {
+    public Page<UsuarioResponse> pageable(@PageableDefault(sort = "idUsuario", direction = Sort.Direction.DESC, size = 5) Pageable pageable) {
         Page<Usuario> usuariosPaginados = usuarioRepository.findAll(pageable);
 
         // Mapea los usuarios a UsuarioResponse
@@ -78,8 +86,21 @@ public class UsuarioController {
         }
         Optional<Distrito> distritoOptional=distritoRepository.findById(usuarioDTO.getDistrito().getIdDistrito());
         Usuario nuevoUsuario=modelMapper.map(usuarioDTO,Usuario.class);
+
+        String contraseñaEncriptada = passwordEncoder.encode(usuarioDTO.getContraseña());
+        nuevoUsuario.setContraseña(contraseñaEncriptada);
+        System.out.println("contraseña ->"+contraseñaEncriptada);
+
         nuevoUsuario.setDistrito(distritoOptional.get());
         nuevoUsuario.setFullName(usuarioDTO.getNombre()+" "+usuarioDTO.getApellido());
+
+        //envio de correo
+        SimpleMailMessage simpleMailMessage=new SimpleMailMessage();
+        simpleMailMessage.setTo(nuevoUsuario.getEmail());
+        simpleMailMessage.setFrom("libreriaproyectocommunitas@gmail.com");
+        simpleMailMessage.setSubject("REGISTRO EXITOSO");
+        simpleMailMessage.setText("GRACIAS POR REGISTRARTE A COMMUNITAS Y AYUDARNOS A CRECER");
+        javaMailSender.send(simpleMailMessage);
         return usuarioRepository.save(nuevoUsuario);
     }
     @GetMapping("/findbyemail")
