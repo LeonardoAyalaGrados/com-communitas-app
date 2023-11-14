@@ -150,15 +150,29 @@ public class UsuarioController {
 
     @PutMapping("/updateuser/{id}")
     public Usuario updateUser(@PathVariable("id") Integer id ,@Validated @RequestBody UsuarioDTO usuarioDTO){
-        Optional<Distrito> distrito=Optional.of(distritoRepository.findById(usuarioDTO.getDistrito().getIdDistrito())
-                .orElseThrow(EntityNotFoundException::new));
+
+
+
         Optional<Usuario> usuarioEncontrado=usuarioRepository.findById(id);
         if (!usuarioEncontrado.isPresent()){
             throw new EntityNotFoundException();
         }
         modelMapper.map(usuarioDTO,usuarioEncontrado.get());
+
+        // Verificar si se proporcionó una nueva contraseña
+        if (usuarioDTO.getContraseña() != null && !usuarioDTO.getContraseña().isEmpty()) {
+            String contraseñaEncriptada = passwordEncoder.encode(usuarioDTO.getContraseña());
+            usuarioEncontrado.get().setContraseña(contraseñaEncriptada);
+            System.out.println("Contraseña -> " + contraseñaEncriptada);
+        }
+
+        if (usuarioDTO.getDistrito() != null && usuarioDTO.getDistrito().getIdDistrito() != null) {
+            Optional<Distrito> distrito=Optional.of(distritoRepository.findById(usuarioDTO.getDistrito().getIdDistrito())
+                    .orElseThrow(EntityNotFoundException::new));
+            usuarioEncontrado.get().setDistrito(distrito.get());
+        }
+
         usuarioEncontrado.get().setFullName(usuarioDTO.getNombre()+" "+usuarioDTO.getApellido());
-        usuarioEncontrado.get().setDistrito(distrito.get());
 
         return  usuarioRepository.save(usuarioEncontrado.get());
     }

@@ -32,7 +32,8 @@ public class WebSecurityConfig {
 				.and()
 				.csrf().disable()
 				.authorizeHttpRequests()
-				.requestMatchers("/api/v1/home/save","/login","/api/v1/distrito/list","/api/media/**", "/api/v1/categoria/list")
+				.requestMatchers("/api/v1/home/save","/login","/api/v1/distrito/list","/api/media/**",
+									"/api/v1/categoria/list","/api/v1/bucket-s3/show-file/")
 				.permitAll()
 				.anyRequest()
 				.authenticated()
@@ -60,7 +61,7 @@ public class WebSecurityConfig {
 	}
 /*
 	public static void main(String[] args) {
-		 System.out.println("PASS: "+new BCryptPasswordEncoder().encode("12345"));
+		 System.out.println("PASS: "+new BCryptPasswordEncoder().encode("12345678"));
 	}
 */
 }
