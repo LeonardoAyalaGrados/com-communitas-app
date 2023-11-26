@@ -39,7 +39,7 @@ public class AWSS3Services {
                 /*se utiliza para controlar quién tiene acceso a los
                 objetos almacenados en S3 y qué tipo de acceso tienen
                 * */
-                .acl(ObjectCannedACL.PUBLIC_READ)
+                //.acl(ObjectCannedACL.PUBLIC_READ)
                 .build();
 
         s3Client.putObject(putObjectRequest, RequestBody.fromInputStream(file.getInputStream(), file.getSize()));

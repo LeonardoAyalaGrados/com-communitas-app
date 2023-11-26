@@ -33,7 +33,7 @@ public class WebSecurityConfig {
 				.csrf().disable()
 				.authorizeHttpRequests()
 				.requestMatchers("/api/v1/home/save","/login","/api/v1/distrito/list","/api/media/**",
-									"/api/v1/categoria/list","/api/v1/bucket-s3/show-file/")
+									"/api/v1/categoria/list","/api/v1/bucket-s3/show-file/{key}")
 				.permitAll()
 				.anyRequest()
 				.authenticated()
